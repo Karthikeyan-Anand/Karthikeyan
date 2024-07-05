@@ -1,0 +1,23 @@
+{
+  "name": "unavaemarunthu",
+  "version": "1.0.0",
+  "description": "\"A organnic food delivery application\"",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "start": "npx parcel src/index.html",
+    "build": "npx parcel build src/index.html"
+  },
+  "author": "KarthikeyanAnand",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.24.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0",
+    "process": "^0.11.10"
+  }
+}
