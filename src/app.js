@@ -1,20 +1,45 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import {BodyComponent} from "./component/BodyComponent.jsx"
-import {HeaderComponent} from "./component/HeaderComponent.jsx"
-import {ShimmerUiComponent} from "./component/ShimmerUIComponent.jsx";
-import {Error} from "./component/ErrorComponent.jsx";
+import { lazy, Suspense, useState } from "react";
+import { Provider } from "react-redux";
+import Body from "./component/Body.jsx";
+import Header from "./component/Header.jsx";
+import MenuCard from "./component/MenuCard.jsx";
+import Error from "./component/Error.jsx";
+import About from "./component/About.jsx";
+import Offer from "./component/Offer.jsx";
+import Cart from "./component/Cart.jsx";
+import Menu from "./component/Menu.jsx";
+import { ThemeContext } from "./utilities/ThemeContext.jsx";
+import appStore from "./utilities/appStore.jsx";
 
+const Grocery = lazy(() => import("./component/Grocery.jsx"));
+
+
+const ThemeProvider = ({ childElements }) => {
+  const [theme, SetTheme] = useState("dark");
+
+  const toggleTheme = () => {
+    SetTheme(theme === "light" ? "dark" : "light");
+  };
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {childElements}
+    </ThemeContext.Provider>
+  );
+};
 
 const AppLayout = () => {
   return (
-    <div className="app-layout">
-      <HeaderComponent />
-      <BodyComponent />
-      <ShimmerUiComponent />
-      <Outlet />
-    </div>
+    <Provider store={appStore}>
+      
+        <div>
+          <Header />
+          <Outlet />
+        </div>
+
+    </Provider>
   );
 };
 
@@ -24,28 +49,42 @@ const appRouter = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        path:"/body",
-        element: <BodyComponent />
+        path: "/",
+        element: <Body />,
       },
       {
-        path:"/about us",
-        element: <AboutComponent />
+        path: "/home",
+        element: <Body />,
       },
       {
-        path:"/offer",
-        element: <OfferComponent />
+        path: "/about",
+        element: <About />,
       },
       {
-        path:"/cart",
-        element: <CartComponent />
+        path: "/offer",
+        element: <Offer />,
+      },
+      {
+        path: "/cart",
+        element: <Cart />,
+      },
+      {
+        path: "/grocery",
+        element: (
+          <Suspense fallback={<h1>Loading .......</h1>}>
+            <Grocery />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/restaurant/:resId",
+        element: <Menu />,
       }
     ],
-    errorElement:<Error />,
-  }
+    errorElement: <Error />,
+  },
 ]);
 
-
-
-const Root = ReactDOM.createRoot(document.getElementById("main"));
+const Root = ReactDOM.createRoot(document.getElementById("root"));
 
 Root.render(<RouterProvider router={appRouter} />);
